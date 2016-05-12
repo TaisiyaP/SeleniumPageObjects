@@ -31,7 +31,7 @@ public class BookingPage {
 
     WebDriver driver;
 
-    public BookingPage(WebDriver wd) {
+    public BookingPage(WebDriver wd, String url) {
         driver = wd;
 
         PageFactory.initElements(new HtmlElementDecorator(new HtmlElementLocatorFactory(driver)), this);

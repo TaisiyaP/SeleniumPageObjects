@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE test SYSTEM "http://testng.org/testng-1.0.dtd">
 
-<test name="T2">
-<parameter name="browser"  value="FF"/>
-<parameter name="URL"  value="http://booking.uz.gov.ua"/>
+<suite name="SeleniumPageObjects">
+    <parameter name="url" value="http://booking.uz.gov.ua/en"/>
+    <test name="BookingSuite" parallel="classes">
+    <classes>
+        <class name="BookingTest"/>
+    </classes>
 </test>
-
-
-
+</suite>

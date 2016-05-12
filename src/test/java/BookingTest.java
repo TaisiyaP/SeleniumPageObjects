@@ -1,6 +1,9 @@
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.*;
 
+import java.net.URL;
+import java.text.ParseException;
+
 import static org.testng.AssertJUnit.assertEquals;
 
 
@@ -12,28 +15,34 @@ public class BookingTest extends DriverSetup {
     WebDriver wd;
     BookingPage bookingPage;
 
-    String URL = "http://booking.uz.gov.ua/en";
-
-
+    @Parameters({"url", "browser"})
     @BeforeMethod
-    public void setUp() throws Exception {
-
+    public void setUp(@Optional(value = "http://booking.uz.gov.ua/en") String url,
+                      @Optional(value = "FF") Browser browser) throws Exception {
         wd = getDriver(Browser.FF);
-        bookingPage = new BookingPage(wd);
-        bookingPage.openPage(URL);
+        bookingPage = new BookingPage(wd, url);
+        bookingPage.openPage(url);
     }
 
 
-    @Test
-    public void orderTicketKievFrankivskTest() {
-        bookingPage.enterStationFrom("Kyiv");
-        bookingPage.selectStationFrom("Kyiv");
-        bookingPage.enterStationTo("Ivano-Frankivsk");
-        bookingPage.selectStationTo("Ivano-Frankivsk");
+    @DataProvider(name = "searchData")
+    public Object[][] createData1() {
+        return new Object[][]{
+                {"Kyiv", "Ivano-Frankivsk", "043 К"},
+                {"Kyiv", "Ivano-Frankivsk", "143 К"},
+        };
+    }
+
+    @Test(dataProvider = "searchData")
+    public void orderTicketKievFrankivskTest(String fromStation, String toStation, String trainNumber) throws ParseException {
+        bookingPage.enterStationFrom(fromStation);
+        bookingPage.selectStationFrom(fromStation);
+        bookingPage.enterStationTo(toStation);
+        bookingPage.selectStationTo(toStation);
         bookingPage.selectDateFromCalendar();
         bookingPage.searchTrains();
-        assertEquals("043 К", bookingPage.getTrainNumberFromTable("043 К"));
-        assertEquals("143 К", bookingPage.getTrainNumberFromTable("143 К"));
+        assertEquals(trainNumber, bookingPage.getTrainNumberFromTable(trainNumber));
+//        assertEquals("143 К", bookingPage.getTrainNumberFromTable("143 К"));
     }
 
     @AfterMethod
